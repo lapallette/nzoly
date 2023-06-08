@@ -1,0 +1,19 @@
+<!-- add_member.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Member</title>
+</head>
+<body>
+    <h1>Add a Member to the Database</h1>
+    <form method="POST" action="/add_member">
+        <input type="text" name="member_id" placeholder="Enter member ID" required>
+        <input type="text" name="team_id" placeholder="Enter team ID" required>
+        <input type="text" name="first_name" placeholder="Enter first name" required>
+        <input type="text" name="last_name" placeholder="Enter last name" required>
+        <input type="text" name="city" placeholder="Enter city" required>
+        <input type="date" name="birthday" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

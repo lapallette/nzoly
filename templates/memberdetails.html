@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- code in here to display a list of books-->
+<h2>{{memberdetails[0][0]}} {{memberdetails[0][1]}}</h2>
+
+<table>
+    <tr>
+        <th>Upcoming Events & Stages</th> 
+    </tr>
+    {% if memberdetails[0][2] is none %}
+    {% for member in memberdetails %}
+    <tr>
+        {% if member[9] is not none %}
+        <td>{{ member[9] }}</td>
+        {% endif %}
+        {% if member[5] is not none %}
+        <td>{{ member[5] }}</td>
+        {% endif %}
+        {% if member[4] is not none %}
+        <td>{{ member[4] }}</td>
+        {% endif %}
+        {% if member[8] is not none %}
+        <td>{{ member[8] }}</td>
+        {% endif %}
+    
+    </tr>   
+    {% endfor %}
+    {% endif %}
+    <tr>
+        <th>Previous Results</th>
+    </tr>
+    {% if memberdetails[0][2] is not none %}
+        {% set displayed_values = [] %}
+        {% for member in memberdetails %}
+            {% if member[9] not in displayed_values %}
+                <tr>
+                    {% if member[9] is not none %}
+                        {% set _ = displayed_values.append(member[9]) %}
+                        <td>{{ member[9] }}</td>
+                    {% endif %}
+                </tr>
+                <tr>      
+                        <td>{{ member[5] }}</td>
+                        <td>{{ member[4] }}</td>                   
+                        <td>{{ member[8] }}</td>                   
+                        <td>Q</td>                    
+                        <td>Gold</td>                  
+                        <td>Silver</td>                   
+                        <td>Bronze</td>                    
+                </tr>
+            {% else %}
+            <tr>
+                {% if member[5] is not none %}
+                <td>{{ member[5] }}</td>
+                {% endif %}
+                {% if member[4] is not none %}
+                <td>{{ member[4] }}</td>
+                {% endif %}
+                {% if member[8] is not none %}
+                <td>{{ member[8] }}</td>
+                {% endif %}
+                {% if member[2] is not none and member[3] is none and member[2] > member[7] %}
+                <td>Q</td>
+                {% endif %}
+                {% if member[3] == 1 %}
+                <td>Gold</td>
+                {% elif member[3] == 2 %}
+                <td>Silver</td>
+                {% elif member[3] == 3 %}
+                <td>Bronze</td>
+                {% endif %}
+            </tr>            
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</table>
+{% endblock %}

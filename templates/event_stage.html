@@ -1,0 +1,15 @@
+<!-- add_event_stage.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Event Stage</title>
+</head>
+<body>
+    <h1>Add Event Stage</h1>
+    <form method="POST" action="{{ url_for('event_stage') }}">
+        <label for="event_stage_name">Event Stage Name:</label>
+        <input type="text" id="event_stage_name" name="event_stage_name" required><br><br>
+        <input type="submit" value="Add Event Stage">
+    </form>
+</body>
+</html>
