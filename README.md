@@ -1,93 +1,141 @@
-NZ Olympic WebApp Documentation
+# NZ Olympic WebApp Documentation
+
+***
 
 Welcome to the documentation for NZ Olympic Web Application.
 
-Table of Contents
+## Table of Contents
 
-WebApp Structure
-Assumptions
-Discussion
+- [WebApp Structure](#WebApp-Structure)
+- [Assumptions](#Assumptions)
+- [Discussion](#Discussion)
 
-WebApp Structure
+---
 
-The NZ Olympic WebApp is built using the Flask framework. It consists of the following modules:
+## My Web Structure
 
-Flask
-render_template
-request
-redirect
-url_for
-re
-datetime
-mysql.connector
-FieldType
-connect
+NZ Olympic WebApp is a web application using Flask frame.
 
-Function
+### Import modules
+-Flask
+-redirect
+-url_for
+-flash
+-re
+-datetime
+-mysql.connector
+-FieldType
+-connect
+-render_template
+-request
 
-getCursor()
-This function establishes a database connection and returns a cursor object.
 
-Routes and Functions
+### Function
++getCrusor()
+    Establish a database connection and return a cursor object
 
-Routes and Functions
 
-Route	Method	Function	Params	Description
-/	GET	home	-	Renders the home page.
-/listmembers	GET	listmembers	-	Retrieves the member list from the database and renders the member list page.
-listevents	GET	listevents	-	Retrieves the event list from the database and renders the event list page.
-/member/<memberid>	GET	memberdetails	memberid	Retrieves the details of a specific member from the database based on the provided member ID and renders the member details page.
-/admin	GET	admin	-	Renders the admin page.
-/admin_search	GET	admin_search	-	Retrieves search results based on the provided event and member queries, and renders the admin search page.
-/add_member	GET, POST	add_member	-	If a POST request is received, it validates the form inputs and adds a new member to the database. If a GET request is received, it retrieves team information to render the add member page.
-/add_event	GET, POST	add_event	-	If a POST request is received, it validates the form inputs and adds a new event to the database. If a GET request is received, it retrieves team information to render the add event page.
-/event_stage	GET, POST	event_stage	-	If a POST request is received, it validates the form inputs and adds a new event stage to the database. If a GET request is received, it retrieves event information to render the add event stage name.
-/add_scores	POST	add_scores	-	Adds scores to the database based on the provided event stage and score.
-/reports	GET	generate_reports	-	Retrieves data for generating reports and renders the reports page.
+### Define route and function
 
-Assumptions
+| Route             | Method | Function        | Params | Description                                |
+|-------------------|--------|-----------------|--------|--------------------------------------------|
+| /                 | GET    | home            | -   | Render the home page.                      |
+| /list_members     | GET    | listmembers     | -   | Retrieve member list and renders the page. |
+| /member/<MemberID>| GET    | member_events   | MemberID | Retrieve event results and related information of the member and renders the page. |
+| /list_events      | GET    | listevents      | -   | Retrieve event list and renders the page.  |
+| /admin            | GET    | admin           | -   | Render the admin page.                     |
+| /admin/search     | GET, POST | admin_search | -   | If memberQuery or eventQuery is provided, it retrieves search results and renders the page "admin_search.html". |
+| /admin/add_member | GET, POST | admin_add_member | - |It retrieves team information to render the page;  If a POST request is received, it validates the form inputs, then adds a new member to the database.          |
+| /admin/edit_member | GET   | admin_edit_member_list | - | Retrieves member list for editing and renders the page. |
+| /admin/<memberID>/edit | GET, POST | admin_edit_member | memberID | If a POST request is received, it validates the form inputs, updates the member details in the database. |
+| /admin/add_event  | GET, POST | admin_add_event | - | Retrieves team information to render the page; Adds a new event to the database.           |
+| /admin/add_event_stage | GET, POST | admin_add_event_stage | - |Retrieves event information to render the page;  If a POST request is received, it validates the form inputs, inserts the new event into the database. |
+| /admin/add_result | GET, POST | admin_add_result | - | Retrieves member and stage information to render the page; If a POST request is received, it validates the form inputs, inserts the new event result into the database. |
+| /admin/show_report | GET | admin_show_report | - | It queries the database for medal details and members in teams and renders the page. Display a report of medal tally and members in teams.|
 
-The database connection details (host, user, password, database) are defined in a separate file named "connect.py".
-The "getCursor()" function is used to establish a database connection and return a cursor object.
-The "/listmembers" route retrieves the member list from the database and renders the "memberlist.html" template, displaying member details.
-The "/listevents" route retrieves the event list from the database and renders the "eventlist.html" template, displaying event details.
-The "/member/<memberid>" route retrieves the details of a specific member from the database based on the provided member ID and renders the "memberdetails.html" template, displaying member details and related event information
+## Assumptions 
 
-Design Decisions
+1. Assumming "TeamID" in "teams" table is equal to "NZTeam" in "events" table, so when I create the admin_add_event() function, administrator select a team for the added event.
+2. The "StageName" in "event_stage" table contain "Qualification", "Final", "Heat 1", there is no clear pattern.Assumming the "StageName" is no rule, so I just check the length.
+3. "EventName", "Sport" in "events" table, "Location" in "event_stage" table, "City" in "members" table are similar situation with "StageName". Assumming they are no pattern, so I just check the length.
+4. Assumming "PointsScored" larger than 0, so when I add_result I check if "PointsScored" is a positive decimal.
 
-1. Route Design
-The routes in this web application are divided into two main sections: public routes and administrator routes.
 
-Public Routes: These routes are accessible to all users and start with /. Users can access interfaces and pages provided by these routes.
-Administrator Routes: These routes are only accessible to administrators and start with /admin. Administrators can access interfaces and pages provided by these routes, which are specifically designed for administrative tasks.
+## Design decisions
 
-2. Page Design
-The page design follows a modular approach using template inheritance.
+### 1.Route design
 
-Public Pages: Public pages extend the base.html template, which serves as the base layout for all public interfaces.
-Administrator Pages: Administrator pages extend the admin.html template, which provides the layout and design specific to administrative tasks.
+The routes to this site is devided to `/` and `/admin`.  
+Public users can visit interfaces start with `/` and administrator can visit interfaces start with `/admin`.  
 
-3. GET and POST Methods
-The GET and POST methods are used in the web application for different purposes.
+### 2.Page design
 
-GET Method: The GET method is used to retrieve and display frontend pages. Users can access and view information through GET requests.
-POST Method: The POST method is used to submit form data and perform actions that modify the backend data. It is used in functions that handle form submissions.
+- For public pages extends from `base.html` 
+- For administrator pages extends from `admin.html`
 
-The following routes utilize both GET and POST methods:
+### 3.GET and POST methods
 
-/admin/search
-/admin/add_member
-/admin/<memberID>/edit
-/admin/add_event
-/admin/add_event_stage
-/admin/add_result
-In these functions, the code checks the request method using if request.method == "POST" to detect and handle POST requests. This allows the functions to retrieve data from the submitted form.
+The GET method is used for displaying the frontend page, and the POST method is used for submitting form data in my web application.
+The function of these route below use both GET and POST methods. 
+- /admin/search
+- /admin/add_member
+- /admin/<memberID>/edit
+- /admin/add_event
+- /admin/add_event_stage
+- /admin/add_result
+In these functions I use 'if request.method =="POST"' to detect POST method. Because these function get data from form.
 
-1. Database Changes
-Regarding the database changes, there are two suggested approaches:
+## Discussion
 
-Add a New Column: Add a new column to each relevant table to indicate the Olympic type (Summer or Winter). For example, you can add an "OlympicID" column where a specific number represents a Summer Olympic and a different number represents a Winter Olympic. The column can be used to distinguish between the two types of events or members.
+### 1. Database changes
 
-Add Separate Tables: Create separate tables for each Olympic type, such as "summer_members" and "winter_members". This approach allows you to store data specific to each Olympic type in separate tables.
+In my opinion, there are two ways.
+1. Add a new column for each table, and define which number means Winter Olympic and which number means Summer Olympic.
+For example, '1' means Summer Olympic, '2' means Winter Olympic. In "members" table:
+|memberID|TeamID|FirstName|LastName|City|Birthdate|OlympicID|
+|1|103|Atticus|Finch|Christchurch|2000-01-01|1|
+||||||||
+2. Add tables for different Olympic, for example:
 
+```sql
+CREATE TABLE IF NOT EXISTS summer_members
+(
+MemberID INT auto_increment PRIMARY KEY NOT NULL,
+TeamID INT NOT NULL,
+FirstName VARCHAR(50) NOT NULL,
+LastName VARCHAR(50) NOT NULL,
+City VARCHAR(30),
+Birthdate DATE NOT NULL,
+FOREIGN KEY (TeamID) REFERENCES teams(TeamID)
+ON UPDATE CASCADE
+ON DELETE CASCADE
+);
+```
+
+
+### 2. Front end changes
+
+Add a Olympic column when listing members and events and so on. The `/list_events` route will displays like:
+|OlympicName|EventID|EventName|Sport|NZTeam|
+|----|----|----|----|----|
+|**Winter Olympic**|3|Big Air|Snowboarding|101|
+|**Summer Olympic**|12|...|...|...|
+
+Also when you display the information or transfer the data, should pay attention to the column. For example to use EventID:
+Before:
+'''Jinja
+{% Event[0]%}
+'''
+After:
+'''Jinja
+{% Event[1]%}
+'''
+
+### 3. Backend changes
+
+The query SQL should be change when you want to operate the database. For example:
+
+```sql
+SELECT * FROM members WHERE OlympicName == "Winter Olympic"
+```
 
