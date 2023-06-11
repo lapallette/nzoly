@@ -92,14 +92,6 @@ def perform_search(events, members):
 
     return search_results
 
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'luckyGRACE1023',
-    'database': 'nzoly',
-    'port': '3306'
-}
-conn = mysql.connector.connect(**db_config)
 
 @app.route('/add_member', methods=['GET', 'POST'])
 def add_member():
@@ -110,15 +102,15 @@ def add_member():
         last_name = request.form.get('last_name')
         city = request.form.get('city')
         birthday = request.form.get('birthday')
-        cursor = conn.cursor()
+        cursor = getCursor()  # 使用getCursor()函数获取游标对象
         sql = "INSERT INTO members (MemberID, TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s, %s)"
         values = (member_id, team_id, first_name, last_name, city, birthday)
         cursor.execute(sql, values)
-        conn.commit()
         cursor.close()
         return "Member added to the database successfully"
     else:
         return render_template('add_member.html')
+
 
 @app.route("/add_event", methods=['GET', 'POST'])
 def add_event():
@@ -127,15 +119,15 @@ def add_event():
         event_name = request.form.get('event_name')
         sport = request.form.get('sport')
         nz_team = request.form.get('nz_team')
-        cursor = conn.cursor()
+        cursor = getCursor()
         sql = "INSERT INTO events (EventID, EventName, Sport, NZTeam) VALUES (%s, %s, %s, %s)"
         values = (event_id, event_name, sport, nz_team)
         cursor.execute(sql, values)
-        conn.commit()
         cursor.close()
         return "Event added to the database successfully"
     else:
         return render_template('add_event.html')
+
 
 @app.route("/event_stage", methods=['GET', 'POST'])
 def event_stage():
@@ -146,15 +138,15 @@ def event_stage():
         stage_date = request.form.get('stage_date')
         qualifying = request.form.get('qualifying')
         points_to_qualify = request.form.get('points_to_qualify')
-        cursor = conn.cursor()
+        cursor = getCursor()
         sql = "INSERT INTO event_stage (StageID, StageName, Location, StageDate, Qualifying, PointsToQualify) VALUES (%s, %s, %s, %s, %s, %s)"
         values = (stage_id, stage_name, location, stage_date, qualifying, points_to_qualify)
         cursor.execute(sql, values)
-        conn.commit()
         cursor.close()
         return "Event Stage added to the database successfully"
     else:
         return render_template('add_event_stage.html')
+
 
 @app.route("/add_scores", methods=['POST'])
 def add_scores():
